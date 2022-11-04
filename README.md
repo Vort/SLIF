@@ -13,3 +13,5 @@ Operation count: 48804196
 ```
 
 To submit your solution, create issue in this repository with title in "Solution by Nickname [score]" format, put your `image.slif` file there, `PSNR` and `Operation count` values from test program and, optionally, any additional information you want to share.
+
+_If you want to skip part with test program analysis, you can read [description with spoilers](https://github.com/Vort/SLIF/blob/spoilers/README.md) instead._
