@@ -1,0 +1,8 @@
+*
+!.gitignore
+!Program.cs
+!slif2tga.cpp
+!*.slif
+!reference.bin
+!*.zip
+!README.md
