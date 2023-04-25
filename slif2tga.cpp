@@ -35,19 +35,23 @@ int main(int argc, char *argv[])
 	uint8_t* memory = new uint8_t[memorySize]();
 	ifs.read((char*)memory, slifSize - 12);
 
-	for (uint32_t ip = 0; ip < memorySize; )
+	if (memorySize >= 12)
 	{
-		uint32_t pa = *(uint32_t*)(memory + ip);
-		uint32_t pb = *(uint32_t*)(memory + ip + 4);
-		uint32_t pc = *(uint32_t*)(memory + ip + 8);
-		int a = *(int*)(memory + pa);
-		int b = *(int*)(memory + pb);
-		b = b - a;
-		*(int*)(memory + pb) = b;
-		if (b <= 0)
-			ip = pc;
-		else
-			ip += 12;
+		uint32_t lastValidIP = memorySize - 12;
+		for (uint32_t ip = 0; ip <= lastValidIP; )
+		{
+			uint32_t pa = *(uint32_t*)(memory + ip);
+			uint32_t pb = *(uint32_t*)(memory + ip + 4);
+			uint32_t pc = *(uint32_t*)(memory + ip + 8);
+			int32_t a = *(int32_t*)(memory + pa);
+			int32_t b = *(int32_t*)(memory + pb);
+			b = b - a;
+			*(int32_t*)(memory + pb) = b;
+			if (b <= 0)
+				ip = pc;
+			else
+				ip += 12;
+		}
 	}
 	const int bitsPerPixel = 24;
 	const int bytesPerPixel = bitsPerPixel / 8;
