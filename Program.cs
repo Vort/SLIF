@@ -38,27 +38,29 @@ namespace SLIF
             br = new BinaryReader(ms);
             var bw = new BinaryWriter(ms);
 
-            uint ip = 0;
-            for (; ip < memorySize; operationCount++)
+            const uint lastValidIP = memorySize - 12;
+            for (uint ip = 0; ip <= lastValidIP; )
             {
-                br.BaseStream.Seek(ip, SeekOrigin.Begin);
+                ms.Seek(ip, SeekOrigin.Begin);
                 uint pa = br.ReadUInt32();
                 uint pb = br.ReadUInt32();
                 uint pc = br.ReadUInt32();
 
-                br.BaseStream.Seek(pa, SeekOrigin.Begin);
+                ms.Seek(pa, SeekOrigin.Begin);
                 int a = br.ReadInt32();
-                br.BaseStream.Seek(pb, SeekOrigin.Begin);
+                ms.Seek(pb, SeekOrigin.Begin);
                 int b = br.ReadInt32();
 
-                b = b - a;
-                bw.BaseStream.Seek(pb, SeekOrigin.Begin);
+                unchecked { b = b - a; }
+                ms.Seek(pb, SeekOrigin.Begin);
                 bw.Write(b);
 
                 if (b <= 0)
                     ip = pc;
                 else
                     ip += 12;
+
+                checked { operationCount++; }
             }
 
             int imageDataOffset = (int)(memorySize - imageWidth * imageHeight * bytesPerPixel);
