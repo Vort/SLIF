@@ -13,18 +13,24 @@ int main(int argc, char *argv[])
 
 	ifstream ifs(argv[1], ios::in | ios::binary);
 	ifs.seekg(0, ifs.end);
-	int slifSize = (int)ifs.tellg();
+	int64_t slifSize = ifs.tellg();
 	ifs.seekg(0, ifs.beg);
 
 	if (slifSize < 12)
+	{
+		cerr << "Error: file size < 12" << endl;
 		return -1;
+	}
 
 	uint32_t signature;
 	ifs.read((char*)&signature, 4);
 	if (signature != 0x46494C53)
+	{
+		cerr << "Error: incorrect signature" << endl;
 		return -1;
+	}
 
-	int8_t tgaHeader[18] = {0, 0, 2};
+	uint8_t tgaHeader[18] = {0, 0, 2};
 	tgaHeader[16] = 24;
 	tgaHeader[17] = 32;
 	ifs.read((char*)tgaHeader + 12, 4);
@@ -32,8 +38,34 @@ int main(int argc, char *argv[])
 	uint32_t memorySize;
 	ifs.read((char*)&memorySize, 4);
 
-	uint8_t* memory = new uint8_t[memorySize]();
-	ifs.read((char*)memory, slifSize - 12);
+	int64_t fileDataSize = slifSize - 12;
+	if (memorySize < fileDataSize)
+	{
+		cerr << "Error: memory size < file data size" << endl;
+		return -1;
+	}
+
+	const int bitsPerPixel = 24;
+	const int bytesPerPixel = bitsPerPixel / 8;
+	uint16_t imageWidth = *(uint16_t*)(tgaHeader + 12);
+	uint16_t imageHeight = *(uint16_t*)(tgaHeader + 14);
+	uint32_t imagePixelCount = imageWidth * imageHeight;
+	uint64_t imageDataSize = uint64_t(imagePixelCount) * bytesPerPixel;
+
+	if (memorySize < imageDataSize)
+	{
+		cerr << "Error: memory size < image data size" << endl;
+		return -1;
+	}
+
+	uint8_t* memory = new(nothrow) uint8_t[memorySize]();
+	if (memory == nullptr)
+	{
+		cerr << "Error: not enough memory" << endl;
+		return -1;
+	}
+
+	ifs.read((char*)memory, fileDataSize);
 
 	if (memorySize >= 12)
 	{
@@ -53,14 +85,9 @@ int main(int argc, char *argv[])
 				ip += 12;
 		}
 	}
-	const int bitsPerPixel = 24;
-	const int bytesPerPixel = bitsPerPixel / 8;
-	uint16_t imageWidth = *(uint16_t*)(tgaHeader + 12);
-	uint16_t imageHeight = *(uint16_t*)(tgaHeader + 14);
-	int imagePixelCount = imageWidth * imageHeight;
-	int imageDataSize = imagePixelCount * bytesPerPixel;
-	int imageDataOffset = (int)(memorySize - imageDataSize);
-	for (int i = 0; i < imagePixelCount; i++)
+
+	uint32_t imageDataOffset = uint32_t(memorySize - imageDataSize);
+	for (uint32_t i = 0; i < imagePixelCount; i++)
 	{
 		uint8_t* p = memory + imageDataOffset + i * bytesPerPixel;
 		uint8_t r = p[0];
@@ -72,5 +99,6 @@ int main(int argc, char *argv[])
 	ofstream ofs(argv[2], ios::out | ios::binary);
 	ofs.write((char*)tgaHeader, 18);
 	ofs.write((char*)memory + imageDataOffset, imageDataSize);
+
 	return 0;
 }
