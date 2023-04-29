@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <cstdint>
 using namespace std;
@@ -70,11 +71,21 @@ int main(int argc, char *argv[])
 	if (memorySize >= 12)
 	{
 		uint32_t lastValidIP = memorySize - 12;
+		uint32_t lastValidPointer = memorySize - 4;
 		for (uint32_t ip = 0; ip <= lastValidIP; )
 		{
 			uint32_t pa = *(uint32_t*)(memory + ip);
 			uint32_t pb = *(uint32_t*)(memory + ip + 4);
 			uint32_t pc = *(uint32_t*)(memory + ip + 8);
+			if (pa > lastValidPointer || pb > lastValidPointer)
+			{
+				cerr << setfill('0') << right << hex;
+				cerr << "Error: out of bounds access at 0x" << setw(8) << ip << ':' << endl;
+				cerr << "  pa = 0x" << setw(8) << pa << ", ";
+				cerr << "pb = 0x" << setw(8) << pb << ", ";
+				cerr << "pc = 0x" << setw(8) << pc << endl;
+				return -1;
+			}
 			int32_t a = *(int32_t*)(memory + pa);
 			int32_t b = *(int32_t*)(memory + pb);
 			b = b - a;
