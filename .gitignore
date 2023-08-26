@@ -1,6 +1,7 @@
 *
 !.gitignore
 !Program.cs
+!index.html
 !slif2tga.cpp
 !*.slif
 !reference.bin
