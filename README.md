@@ -1,4 +1,4 @@
-This repository contains rules for image codec creation challenge.
+This repository contains rules for image compression challenge.
 
 Goal of this challenge is to create `image.slif` file, which contains compressed image. This file should be as small as you can get, decoded image should have decent quality and decoding process should not take too much time. File size specifies score (lower is better). Quality and time determines if solution is correct or not. Valid solution to this challenge must contain file by itself. Providing description of how it was created is optional.
 
