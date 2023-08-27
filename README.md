@@ -1,4 +1,4 @@
-This repository contains rules for image codec creation challenge.
+This repository contains rules for image compression challenge.
 
 Goal of this challenge is to create `image.slif` file, which contains compressed image. Such file should consist of two parts - header, which is constant for this challenge and subleq machine code, which produce image data when interpreted by test program. Valid solution to this challenge must contain file by itself. Providing description of how it was created is optional.
 
