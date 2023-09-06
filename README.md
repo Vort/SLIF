@@ -14,16 +14,16 @@ Constant header of `image.slif` is 12 bytes in size and equal to 53 4C 49 46 00 
 
 Variable data, which defines your solution, consists of subleq instructions, which also can be viewed as pure data. Each instruction have size of 12 bytes and consists of 3 addresses - `pa`, `pb`, `pc`. Each address is encoded as 32 bit little-endian byte index. Address 0 points to first byte of first instruction, which will be first operation executed. Last accessible byte have address 0xFFFFFFF (256 MiB - 1 byte). However, since variables, accessed by 32 bit pointers, are also 32 bit values, to access this byte, extra data should be read or written, which means that last valid value for pointer is 0xFFFFFFC. Reading and writing to addresses beyond it is not allowed. Transferring execution to addresses 0xFFFFFF5 and beyond is allowed and will result in program termination. Execution of each instruction consists or reading values from addresses `pa` and `pb` to variables `a` and `b`, subtraction of `a` from `b`, storing result by address `pb` and jumping to address `pc` if `b - a` is less or equal to zero or to address equal to instruction pointer + 12 otherwise. Goal of subleq program is to produce image data at addresses 0xFF40000 .. 0xFFFFFFF and terminate its execution.
 
-To check if your file is good enough, you need to execute test program, which is available in two versions: offline and online. Offline version is written in C#, binary and source code are located in [slif_v2.zip](https://github.com/Vort/SLIF/raw/a78c14980e01cf9cb0f49ccb1d2f09563d321dfa/slif_v2.zip) archive (CRC32 BAE0BA24). Online version is written in JavaScript and available [here](https://vort.github.io/SLIF/). These versions should behave the same, but in case of differences, results from C# version are preferred.
+To check if your file is good enough, you need to execute test program, which is available in two versions: offline and online. Offline version is written in C#, binary and source code are located in [slif.zip](https://github.com/Vort/SLIF/blob/master/slif.zip?raw=true) archive. Online version is written in JavaScript and available [here](https://vort.github.io/SLIF/). These versions should behave the same, but in case of differences, results from C# version are preferred.
 
 To start testing with C# version, you need to copy `image.slif` file to the same directory where binary is located and launch the binary (`SLIF.exe`). To start testing with JavaScript version, you need to select `image.slif` file with Browse button and click Check button. If test is finished and program shows "Success" message, then your file is good. Otherwise it is not good.
 
-When test program is started with my solution, which is located inside `.zip` archive and can also be downloaded from [this](https://github.com/Vort/SLIF/blob/solutions/image_491916.slif?raw=true) link, it should produce following output:
+When test program is started with example solution, which is located inside `.zip` archive and can also be downloaded from [this](https://github.com/Vort/SLIF/blob/solutions/image_667176.slif?raw=true) link, it should produce following output:
 ```
 Success
-File size: 491916
-PSNR: 35.7080560
-Operation count: 48804196
+File size: 667176
+PSNR: 34.0640466
+Operation count: 1342951
 ```
 
 To submit your solution, create issue in this repository with title in "Solution by Nickname [score]" format, put there your `image.slif` file, `Operation count` value from test program and, optionally, any additional information you want to share.
