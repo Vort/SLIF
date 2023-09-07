@@ -1,9 +1,11 @@
 *
 !.gitignore
+!doc
+!doc/*.png
 !Program.cs
 !index.html
 !slif2tga.cpp
-!*.slif
+!/*.slif
 !reference.bin
 !*.zip
 !README.md
