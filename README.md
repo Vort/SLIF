@@ -35,21 +35,21 @@ Operation count: 1342951
   To check if image quality is within acceptable limits, sum of squared differences between byte values of reference image data and image data, produced by subleq code, is calculated. To make this number more readable, it is converted into `PSNR` format. Error smaller than `20358302` corresponds to PSNR larger than `34`.
   
   To better understand how subleq code can be used to decompress image data, example solutions can be examined.
-
+  
   Example #1 consists of 5 instructions, 3 constants and 1 variable. Instructions are located at addresses `000`, `00C`, `018`, `024` and `030`, 2 constants (4 bytes each) are located at `03C` (-1) and `040` (-4), 1 variable 4 bytes in size is located at `044` (-196607) and 1 constant 786432 bytes in size starts at `048`.
   
   ![Example #1 hex dump](doc/example1.png)
   
   Example #1 simply transfers image data from one memory location to another. Instruction `000` takes 4 bytes from location `0x00000048` and moves them (with negation) to location `0x0FF40000`. Instructions `00C` and `018` adjusts pointers `pa` (`000`) and `pb` (`004`) inside instruction `000` by adding `4` to them. Instruction `024` loops to instruction `000` until counter at `044` becomes greater than zero (jump is executed 196607 times, resulting in 196608 iterations in total). Instruction `030` terminates execution by jumping to address, located out of memory bounds (`0xFFFFFFFF`).
   
-  Example #2 extends idea of example #1 by splitting image into pairs: first element of pair encodes fixed color (#E1836C), second element encodes raw image data, like in example #1.
+  Example #2 extends idea of example #1 by splitting image into pairs of spans: first span in each pair is filled with fixed color (#E1836C), second span contains raw image data, like in example #1.
   
   ![Example #2 hex dump](doc/example2.png)
   
-  Code of example #2 contains 3 loops. First loop (`03C` to `060`) decodes fixed color part, second loop (`0A8` to `0F0`) decodes raw part and third loop (`000` to `0FC`) iterates over all pairs.
+  Code of example #2 contains 3 loops. First loop (`03C` to `060`) decodes fixed color span, second loop (`0A8` to `0F0`) decodes raw span and third loop (`000` to `0FC`) iterates over all pairs.
   
-  Constant data at `12C` starts with value `07 00 00 00`, which means 8 pixels of constant color should be written. Value `02 00 00 00` at address `130` means that 3 blocks 4 bytes each (4 pixels) should be copied as is (with inversion). Value `1F 00 00 00` at `140` means that 32 pixels of fixed color should be written and so on.
-    
+  Constant data at `12C` starts with value `07 00 00 00`, which means 8 pixels of constant color should be written. Value `02 00 00 00` at address `130` means that 3 blocks 4 bytes each (4 pixels) should be copied as is (with negation). Value `1F 00 00 00` at `140` means that 32 pixels of fixed color should be written and so on.
+  
 </details>
 
 To submit your solution, you need to create issue in this repository with title in "Solution by Nickname [score]" format, put there your `.slif` file, `Operation count` value from test program and, optionally, any additional information you want to share. Providing description of how file was created is not required.
