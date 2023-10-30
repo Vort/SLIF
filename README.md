@@ -1,4 +1,4 @@
-This repository contains rules for image compression challenge.
+This repository contains rules for image compression challenge, which can help to learn high level and low level program optimization techniques.
 
 In this challenge you need to create `image.slif` file, which contains compressed image. The smaller this file is, the better the solution (score is defined as file size in bytes). For solution to be valid, two of its properties must lie within certain limits: image quality (`PSNR`) and amount of steps for decompression algorithm (`Operation count`). To understand how to make such file, you need to either analyze test program and example solutions or read description in hidden section below.
 
